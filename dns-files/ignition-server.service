@@ -1,0 +1,10 @@
+[Unit]
+Description=Serving ignition files
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/home/okd/okd_installation_dir
+[Service]
+ExecStart=python -m http.server -d /home/okd/okd_installation_dir/
+Restart=always
+[Install]
+WantedBy=multi-user.target

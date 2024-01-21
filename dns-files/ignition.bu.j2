@@ -1,0 +1,73 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: okd
+      groups: 
+        - sudo
+        - wheel
+    # PSW: lab123
+    # Hash obtained with 'docker run -ti --rm quay.io/coreos/mkpasswd --method=yescrypt'
+      password_hash: $y$j9T$.KAfnJXt5moudSbOzPJax0$A6uPnz5L9Ri8ed1H3bk1d6X6eom9SzbimkZaUk1cND8
+storage:
+  files:
+    - path: /etc/NetworkManager/system-connections/{{ data.interface }}.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id={{ data.interface }}
+          type=ethernet
+          interface-name={{ data.interface }}
+          [ipv4]
+          address1={{ data.host }}/{{ data.prefix }},{{ data.gateway }}
+          dns=8.8.8.8; 
+          dns-search={{ data.domain }}
+          may-fail=true
+          method=manual
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: ns
+    - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
+      mode: 0644
+      contents:
+        inline: |
+          # Fedora CoreOS disables SSH password login by default.
+          # Enable it.
+          # This file must sort before 40-disable-passwords.conf.
+          PasswordAuthentication yes
+          
+    - path: /usr/local/bin/dns-setup.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          rpm-ostree install -y  butane wget open-vm-tools nrpe bind bind-doc --idempotent --allow-inactive
+          echo OK > /home/okd/dns-install.result
+          reboot
+systemd:
+  units:
+    - name: dns-setup.service
+      enabled: true
+      contents: |
+        [Unit]
+        Before=systemd-user-sessions.service
+        Wants=network-online.target
+        After=network-online.target
+        ConditionPathExists=!/home/okd/dns-install.result
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/dns-setup.sh
+        RemainAfterExit=yes
+        [Install]
+        WantedBy=multi-user.target
+    - name: serial-getty@ttyS0.service
+      dropins:
+        - name: autologin-core.conf
+          contents: |
+            [Service]
+            # Override Execstart in main unit
+            ExecStart=
+            # Add new Execstart with `-` prefix to ignore failure`
+            ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM

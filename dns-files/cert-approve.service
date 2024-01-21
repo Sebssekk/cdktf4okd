@@ -1,0 +1,10 @@
+[Unit]
+Description=Approving node cert on control plane
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/home/okd/oc
+[Service]
+ExecStart=/opt/cert-approve.sh
+Restart=always
+[Install]
+WantedBy=multi-user.target

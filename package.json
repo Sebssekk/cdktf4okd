@@ -1,0 +1,44 @@
+{
+  "name": "okd_cdktf",
+  "version": "1.0.0",
+  "main": "main.js",
+  "types": "main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "deploy": "cdktf deploy '*' --auto-approve",
+    "destroy": "cdktf destroy '*' --auto-approve",
+    "ignite": "node ./utility_scripts/ignitions.mjs",
+    "wait-install": "node ./utility_scripts/wait-install.mjs",
+    "post-install-addons": "node ./utility_scripts/post-install-basic-addons.mjs",
+    "get": "cdktf get",
+    "build": "tsc",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "upgrade": "npm i cdktf@latest cdktf-cli@latest",
+    "upgrade:next": "npm i cdktf@next cdktf-cli@next"
+  },
+  "engines": {
+    "node": ">=16.0"
+  },
+  "dependencies": {
+    "@cdktf/provider-null": "^9.0.0",
+    "@cdktf/provider-template": "^9.0.0",
+    "@cdktf/provider-vsphere": "^8.0.0",
+    "cdktf": "^0.19.0",
+    "constructs": "^10.3.0",
+    "dotenv": "^16.3.1",
+    "node-ssh": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.6",
+    "@types/node": "^20.8.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
