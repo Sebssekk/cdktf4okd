@@ -9,6 +9,9 @@ import {
   HAProxyCfg,
   installConfig,
   isoCustomization,
+  dnsSetup,
+  helperSetup,
+  haproxySetup,
 } from './templates'
 import { FileProvisioner, LocalExecProvisioner, RemoteExecProvisioner } from 'cdktf'
 
@@ -65,28 +68,34 @@ export const dnsProvisioner : (LocalExecProvisioner | RemoteExecProvisioner | Fi
     },
     {
       type: "file",
+      destination: `/home/okd/dns-setup.sh`,
+      content: dnsSetup,
+    },
+    {
+      type: "file",
+      destination: `/home/okd/helper-setup.sh`,
+      content: helperSetup,
+    },
+    {
+      type: "file",
       destination: `/home/okd/iso-customization.sh`,
       content: isoCustomization,
-    },
-    { type: "remote-exec",
-      inline : [
-        `echo \"export domain=${process.env.domain}\" >> ~/.bashrc`,
-        `echo \"export interface=${process.env.interface}\" >> ~/.bashrc`,
-        `echo \"export network=${process.env.network}\" >> ~/.bashrc`,
-        `echo \"export dnsNode=${process.env.dnsNode}\" >> ~/.bashrc`,
-        `echo \"export openshiftInstall=${process.env.openshiftInstall}\" >> ~/.bashrc`,
-        `echo \"export OCcli=${process.env.OCcli}\" >> ~/.bashrc`,
-      ],
     },
     {
       // DNS Setup
       type: 'remote-exec',
-      script: join(__dirname,'dns-files','dns-setup.sh'),
+      inline : [
+        'chmod +x /home/okd/dns-setup.sh',
+        '/home/okd/dns-setup.sh',
+      ],
     },
     {
       // Helper Setup
       type: 'remote-exec',
-      script: join(__dirname,'dns-files', 'helper-setup.sh'),
+      inline : [
+        'chmod +x /home/okd/helper-setup.sh',
+        '/home/okd/helper-setup.sh',
+      ],    
     },
     { 
       // ISO Customization
@@ -104,16 +113,17 @@ export const albProvisioner: (LocalExecProvisioner | RemoteExecProvisioner | Fil
     destination: `/home/okd/haproxy.cfg`,
     content: HAProxyCfg,
   },
-  { 
-    type: "remote-exec",
-    inline : [
-      `echo \"export interface=${process.env.interface}\" >> ~/.bashrc`,
-      `echo \"export dnsNode=${process.env.dnsNode}\" >> ~/.bashrc`,
-    ]
+  {
+    type: "file",
+    destination: `/home/okd/haproxy-setup.sh`,
+    content: haproxySetup,
   },
   {
     // Haproxy Setup
     type: 'remote-exec',
-    script: join(__dirname,'alb-files','haproxy-setup.sh'),
+    inline : [
+      'chmod +x /home/okd/haproxy-setup.sh',
+      '/home/okd/haproxy-setup.sh',
+    ],  
   },
 ]

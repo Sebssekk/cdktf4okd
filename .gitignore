@@ -15,3 +15,4 @@ pull-secret.txt
 .iso-temp
 .run-log
 kube-auth
+.env.local

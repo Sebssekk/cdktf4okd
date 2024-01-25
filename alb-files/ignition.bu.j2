@@ -2,14 +2,17 @@ variant: fcos
 version: 1.5.0
 passwd:
   users:
-    - name: okd
+    - name: {{ data.user }}
       groups: 
         - sudo
         - wheel
-    # PSW: lab123
+    # PSW: {{ data.psw }}
     # Hash obtained with 'docker run -ti --rm quay.io/coreos/mkpasswd --method=yescrypt'
-      password_hash: $y$j9T$.KAfnJXt5moudSbOzPJax0$A6uPnz5L9Ri8ed1H3bk1d6X6eom9SzbimkZaUk1cND8
+      password_hash: {{ data.pswHash }}
 storage:
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/{{ data.TZ }}
   files:
     - path: /etc/NetworkManager/system-connections/{{ data.interface }}.nmconnection
       mode: 0600

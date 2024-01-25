@@ -54,17 +54,13 @@ export  const checkDNSRecords = Fn.templatefile(getFilename(['dns-files', 'dns-c
    alb_addr: process.env.albNode
 })
 
-export const isoCustomization = Fn.templatefile(getFilename( ['dns-files', 'iso-customization.sh.tpl']),{
-   domain: process.env.domain,
+export  const dnsSetup = Fn.templatefile(getFilename(['dns-files', 'dns-setup.sh.tpl']),{
    dns_host: process.env.dnsNode,
-   master_addrs: process.env.masterNodes?.split(','),
-   worker_addrs: process.env.workerNodes?.split(','),
-   bootstrap_addr: process.env.bootstrapNode,
-   prefix: process.env.prefix,
-   gateway: process.env.gateway,
    interface: process.env.interface,
-   fedoraISO: process.env.fedoraISO
+   network: process.env.network,
+   domain: process.env.domain,
 })
+
 
 // ALB Templatate
 
@@ -74,10 +70,33 @@ export const HAProxyCfg = Fn.templatefile(getFilename(['alb-files', 'haproxy.cfg
     bootstrap_addr: process.env.bootstrapNode,
     master_addrs: process.env.masterNodes?.split(','),
     worker_addrs: process.env.workerNodes?.split(','),
- })
+})
+
+export  const haproxySetup = Fn.templatefile(getFilename(['alb-files', 'haproxy-setup.sh.tpl']),{
+   dns_host: process.env.dnsNode,
+   interface: process.env.interface,
+})
 
 // Helper
 export const installConfig = Fn.templatefile(getFilename(['okd-install.yaml.tpl']),{
     domain: process.env.domain,
     cluster_name: process.env.clusterName,
  })
+ export  const helperSetup = Fn.templatefile(getFilename(['dns-files', 'helper-setup.sh.tpl']),{
+   openshiftInstall: process.env.openshiftInstall,
+   OCcli: process.env.OCcli,
+   TZ: process.env.TZ,
+})
+
+export const isoCustomization = Fn.templatefile(getFilename( ['dns-files', 'iso-customization.sh.tpl']),{
+   domain: process.env.domain,
+   dns_host: process.env.dnsNode,
+   master_addrs: process.env.masterNodes?.split(','),
+   worker_addrs: process.env.workerNodes?.split(','),
+   bootstrap_addr: process.env.bootstrapNode,
+   prefix: process.env.prefix,
+   gateway: process.env.gateway,
+   interface: process.env.interface,
+   fedoraISO: process.env.fedoraISO,
+   TZ: process.env.TZ
+})

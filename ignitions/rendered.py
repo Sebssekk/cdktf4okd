@@ -6,7 +6,7 @@ def main(args):
     folder = args[2]
     args = args[3:]
     data = {a.split('=')[0]:a.split('=')[1] for a in args} 
-    
+  
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
     template =  environment.get_template(f"{folder}/ignition.bu.j2")
     ign = template.render(data=data)

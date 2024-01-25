@@ -83,8 +83,8 @@ export class OkdCluster extends TerraformStack {
               ],
               connection:{
                 type: 'ssh',
-                user: 'okd',
-                password: 'lab123',
+                user: process.env.essentialsUser,
+                password: process.env.essentialsPsw,
                 host:  process.env.dnsNode || ''
               }
             },
@@ -95,8 +95,8 @@ export class OkdCluster extends TerraformStack {
               ],
               connection:{
                 type: 'ssh',
-                user: 'okd',
-                password: 'lab123',
+                user: process.env.essentialsUser,
+                password: process.env.essentialsPsw,
                 host:  process.env.albNode || ''
               }
             },
@@ -112,8 +112,8 @@ export class OkdCluster extends TerraformStack {
         const waitInstall = new Resource(this, "wait-install-resource",{
           connection: {
             type: 'ssh',
-            user: 'okd',
-            password: 'lab123',
+            user: process.env.essentialsUser,
+            password: process.env.essentialsPsw,
             host:  process.env.dnsNode || ''
           },
           provisioners: [
@@ -130,8 +130,8 @@ export class OkdCluster extends TerraformStack {
         new Resource(this, "post-install-addons",{
           connection: {
             type: 'ssh',
-            user: 'okd',
-            password: 'lab123',
+            user: process.env.essentialsUser,
+            password: process.env.essentialsPsw,
             host:  process.env.dnsNode || ''
           },
           provisioners: [

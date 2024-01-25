@@ -8,6 +8,7 @@ The automation process is built with **[CDK for Terraform](https://developer.has
 ## **Usage**
 To create the cluster
 * Fill up the `.env` file (or export environment variable) with required setup details
+* Ensure you have a container runtime running, **docker** or **podman**. It's required to create ignition files.
 * `$ npm install` to collect dependencies
 * `$ npm run ignite` to generate [ignition files]() for dns and haproxy machines
 * `$ npm run deploy` to start the cluster creation  

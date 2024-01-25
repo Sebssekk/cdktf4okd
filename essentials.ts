@@ -69,8 +69,8 @@ export class Essentials extends TerraformStack {
         },
         connection: {
           type: 'ssh',
-          user: 'okd',
-          password: 'lab123',
+          user: process.env.essentialsUser,
+          password: process.env.essentialsPsw,
           host: node == 'dns' ? process.env.dnsNode || '' : process.env.albNode || ''
         },
         provisioners: node == 'dns' ? dnsProvisioner : albProvisioner 
